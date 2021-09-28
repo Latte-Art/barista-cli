@@ -1,0 +1,45 @@
+{
+  "name": "barista-cli",
+  "version": "1.0.0",
+  "repository": "git@github.com:Latte-Art/barista-cli.git",
+  "author": "ApexCaptain <ayteneve93@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "// Dev": "------------------------------------------------------",
+    "dev@clear": "run-script-os",
+    "dev@clear:nix": "sudo rm -r -f ./dist",
+    "dev@clear:default": "ts-node ./commands/DirectoryClean.task.ts",
+    "dev@unlink" : "ts-node ./commands/Unlink.task.ts",
+    "dev@build": "yarn dev@unlink && yarn dev@clear && tsc && yarn dev@link",
+    "dev@link" : "run-script-os",
+    "dev@link:nix" : "sudo chmod +x ./dist/index.js && yarn dev@link:default",
+    "dev@link:default" : "yarn link",
+    "dev@update": "ncu -u && yarn",
+    "// Test": "-----------------------------------------------------",
+    "test" : "yarn dev@build && barista"
+  },
+  "bin": {
+    "barista": "./dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "16.10.1",
+    "@typescript-eslint/eslint-plugin": "4.32.0",
+    "@typescript-eslint/parser": "4.32.0",
+    "eslint": "7.32.0",
+    "eslint-config-google": "0.14.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "npm-check-updates": "11.8.5",
+    "prettier": "2.4.1",
+    "run-script-os": "1.1.6",
+    "ts-node": "10.2.1",
+    "tsc": "2.0.3",
+    "typescript": "4.4.3"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}
