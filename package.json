@@ -12,20 +12,20 @@
     "dev@clear": "run-script-os",
     "dev@clear:nix": "sudo rm -r -f ./dist",
     "dev@clear:default": "ts-node ./commands/DirectoryClean.task.ts",
-    "dev@unlink" : "ts-node ./commands/Unlink.task.ts",
+    "dev@unlink": "ts-node ./commands/Unlink.task.ts",
     "dev@build": "yarn dev@unlink && yarn dev@clear && tsc && yarn dev@link",
-    "dev@link" : "run-script-os",
-    "dev@link:nix" : "sudo chmod +x ./dist/index.js && yarn dev@link:default",
-    "dev@link:default" : "yarn link",
+    "dev@link": "run-script-os",
+    "dev@link:nix": "sudo chmod +x ./dist/index.js && yarn dev@link:default",
+    "dev@link:default": "yarn link",
     "dev@update": "ncu -u && yarn",
     "// Test": "-----------------------------------------------------",
-    "test" : "yarn dev@build && barista"
+    "test": "yarn dev@build && barista -c my.baristarc.js"
   },
   "bin": {
     "barista": "./dist/index.js"
   },
   "devDependencies": {
-    "@types/node": "16.10.1",
+    "@types/node": "16.10.2",
     "@typescript-eslint/eslint-plugin": "4.32.0",
     "@typescript-eslint/parser": "4.32.0",
     "eslint": "7.32.0",
@@ -40,6 +40,7 @@
     "typescript": "4.4.3"
   },
   "dependencies": {
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "cli-select": "^1.1.2"
   }
 }

@@ -1,30 +1,34 @@
 type DefaultValueType<ValueType> =
   | ValueType
   | (() => ValueType | Promise<ValueType>);
+
 export abstract class Optional<ValueType = boolean> {
-  value!: ValueType;
-  defaultValue: DefaultValueType<ValueType> | undefined;
-  isRequired: boolean;
-  hasValue: boolean;
-  flags: Array<string> = [];
+  abstract isRequired: boolean;
+  abstract hasValue: boolean;
+  abstract flags: Array<string>;
+
+  abstract defaultValue: DefaultValueType<ValueType | undefined>;
+
+  /*
   constructor({
+    errorStringOnUndefined = undefined,
     isRequired = false,
     hasValue = false,
     defaultValue = undefined,
   }: {
+    errorStringOnUndefined?: string | undefined;
     isRequired?: boolean;
     hasValue?: boolean;
     defaultValue?: DefaultValueType<ValueType>;
   } = {}) {
+    this.errorStringOnUndefined = errorStringOnUndefined;
     this.isRequired = isRequired!;
     this.hasValue = hasValue!;
     this.defaultValue = defaultValue;
   }
-  setFlags(...flags: Array<string>) {
-    this.flags = flags;
-    return this;
-  }
+  */
 
+  /*
   async fetch(argv: Array<string>): Promise<Array<string>> {
     let isFound = false;
     let foundValue = '';
@@ -50,8 +54,5 @@ export abstract class Optional<ValueType = boolean> {
     }
     return [];
   }
+  */
 }
-
-export class SomeClass extends Optional<number> {}
-const inst = new SomeClass();
-console.log(inst);

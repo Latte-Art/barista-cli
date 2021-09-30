@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-import { setProcessEnv } from './module';
+import { setProcessEnv, OptionParser } from './module';
+
 (async () => {
   setProcessEnv();
-  console.log('done');
+  const optionParser = await OptionParser.instance;
+  await optionParser.parseOptions();
   process.exit(0);
 })();

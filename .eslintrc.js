@@ -15,5 +15,6 @@ module.exports = {
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'require-jsdoc': 'off',
     'no-unused-vars': 'warn',
+    'prefer-const': 'warn',
   },
 };
