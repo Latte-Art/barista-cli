@@ -16,5 +16,6 @@ module.exports = {
     'require-jsdoc': 'off',
     'no-unused-vars': 'warn',
     'prefer-const': 'warn',
+    'no-array-constructor': 'off',
   },
 };

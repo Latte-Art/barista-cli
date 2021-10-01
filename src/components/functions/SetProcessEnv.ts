@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
 import chalk from 'chalk';
-export const setProcessEnv = () => {
+import { HighLighter } from '../../module';
+export const setProcessEnv = async () => {
+  const highLighter = await HighLighter.instance;
   if (!process.env.npm_config_argv && !process.env.npm_lifecycle_event) {
     try {
       execSync('yarn -v');
@@ -34,7 +36,7 @@ export const setProcessEnv = () => {
       throw reason;
     })
     .on('uncaughtException', (error) => {
-      if (error) console.error(chalk.magenta(error));
+      if (error) highLighter.error(error);
       else process.exit(0);
       process.exit(1);
     });

@@ -12,12 +12,19 @@ export class HighLighter {
     });
   }
   private constructor() {}
-  private async init() {}
   private get cliName() {
     return chalk.rgb(205, 133, 63).bold('Barista');
   }
   info(...data: any[]) {
     console.info(this.cliName, chalk.bold.blue('info'), '--', chalk.cyan(data));
+  }
+  error(...data: any) {
+    console.error(
+      this.cliName,
+      chalk.bold.red('error'),
+      '--',
+      chalk.redBright(data),
+    );
   }
   async select<ValueType>(
     initialString: string,

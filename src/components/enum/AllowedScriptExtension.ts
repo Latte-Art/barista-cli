@@ -5,7 +5,7 @@ export enum AllowedScriptExtension {
   'js' = '.js',
   'ts' = '.ts',
 }
-const allowedScriptExtensionStringArray = Object.values(
+const allowedScriptExtensionStringArray: Array<string> = Object.values(
   AllowedScriptExtension,
 ).map((eachExtension) => eachExtension.toString());
 export namespace AllowedScriptExtension {
@@ -13,4 +13,9 @@ export namespace AllowedScriptExtension {
     allowedScriptExtensionStringArray.some((eachExtensionString) =>
       fileName.endsWith(eachExtensionString),
     );
+  export const checkIsDefaultFileName = (fileName: string): boolean =>
+    allowedScriptExtensionStringArray.some(
+      (eachExtensionString) => `barista${eachExtensionString}` == fileName,
+    );
+  export const list = allowedScriptExtensionStringArray;
 }

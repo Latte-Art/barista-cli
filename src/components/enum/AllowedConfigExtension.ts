@@ -6,9 +6,11 @@ export enum AllowedConfigExtension {
   'baristarc_js' = '.baristarc.js',
   'baristarc_ts' = '.baristarc.ts',
 }
-const allowedConfigExtensionStringArray = Object.values(
+const allowedConfigExtensionArray = Object.values(
   AllowedConfigExtension,
-).map((eachExtension) => eachExtension.toString());
+) as Array<AllowedConfigExtension>;
+const allowedConfigExtensionStringArray: Array<string> =
+  allowedConfigExtensionArray.map((eachExtension) => eachExtension.toString());
 export namespace AllowedConfigExtension {
   export const checkIsAllowed = (fileName: string): boolean =>
     allowedConfigExtensionStringArray.some((eachExtensionString) =>
@@ -18,4 +20,12 @@ export namespace AllowedConfigExtension {
     allowedConfigExtensionStringArray.some(
       (eachExtensionString) => eachExtensionString == fileName,
     );
+  export const getMatchedExtension = (
+    fileName: string,
+  ): AllowedConfigExtension | undefined =>
+    allowedConfigExtensionArray.find((eachExtension: AllowedConfigExtension) =>
+      fileName.endsWith(eachExtension),
+    );
+
+  export const list = allowedConfigExtensionStringArray;
 }

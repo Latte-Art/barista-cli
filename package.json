@@ -19,7 +19,7 @@
     "dev@link:default": "yarn link",
     "dev@update": "ncu -u && yarn",
     "// Test": "-----------------------------------------------------",
-    "test": "yarn dev@build && barista -c my.baristarc.js"
+    "test": "yarn dev@build && barista -c ./something.baristarcd"
   },
   "bin": {
     "barista": "./dist/index.js"
