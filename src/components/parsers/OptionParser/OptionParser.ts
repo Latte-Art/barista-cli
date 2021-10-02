@@ -1,6 +1,6 @@
 import { Optional } from './options/abstract/Optional';
 import { ConfigPathOption } from './options/ConfigPathOption';
-// import { ScriptPathOption } from './options/ScriptPathOption';
+import { ScriptPathOption } from './options/ScriptPathOption';
 
 export class OptionParser {
   private static sInstance: OptionParser;
@@ -17,7 +17,7 @@ export class OptionParser {
   private async init() {}
 
   configPath = new ConfigPathOption();
-  // scriptPath = new ScriptPathOption();
+  scriptPath = new ScriptPathOption();
 
   async parseOptions() {
     const optionMembers = Object.values(this).filter(
@@ -30,9 +30,7 @@ export class OptionParser {
     }, new Array<string>());
     */
     let args = process.argv.slice(2);
-    for (const eachOption of optionMembers)
-      args = await eachOption.fetch(process.argv.slice(2));
-
+    for (const eachOption of optionMembers) args = await eachOption.fetch(args);
     console.log(optionMembers);
   }
 }

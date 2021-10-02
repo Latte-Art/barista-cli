@@ -1,4 +1,5 @@
-type OptionConfig = {
+import { MissingRequiredOptionError } from '../../../../../module';
+export type OptionConfig = {
   script: string;
 };
 export abstract class Optional<ValueType> {
@@ -8,27 +9,31 @@ export abstract class Optional<ValueType> {
   protected abstract mFlags: Array<string>;
   protected abstract mFetchCount: number | undefined;
 
-  protected abstract fetchByConfig(): Promise<void>;
+  protected abstract fetchByConfig(config: OptionConfig): Promise<void>;
   protected abstract fetchByDefault(): Promise<void>;
   protected abstract cast(
     fetchedStringArray: Array<string>,
   ): Promise<ValueType>;
+  protected abstract afterEvaluate(value: ValueType): Promise<void>;
 
   protected mIsFetched = false;
   protected mFetchedStringArray = new Array<string>();
 
   value!: ValueType;
 
+  get undefinedErrorMessage(): string {
+    return 'Unimplemented undefined error message';
+  }
+
   async fetch(argv: Array<string>): Promise<Array<string>> {
     argv = await this.parse(argv);
-    if (!this.mIsFetched) await this.fetchByConfig();
+    if (!this.mIsFetched) await this.fetchByConfig(Optional.config);
     if (!this.mIsFetched) await this.fetchByDefault();
-    if (!this.mIsFetched && this.mIsRequired) {
-      // 에러 발생
-      console.error('error');
-    }
+    if (!this.mIsFetched && this.mIsRequired)
+      throw new MissingRequiredOptionError(this.undefinedErrorMessage);
     if (this.mIsFetched) {
       this.value = await this.cast(this.mFetchedStringArray);
+      await this.afterEvaluate(this.value);
     }
     return argv;
   }

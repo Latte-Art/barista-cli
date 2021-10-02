@@ -1,13 +1,11 @@
-export const tmp = 'tmp';
-/*
-import { Optional } from './abstract/Optional';
+import { Optional, OptionConfig } from './abstract/Optional';
 import {
   AllowedScriptExtension,
   getRootDir,
-  HighLighter,
+  FileNotFoundError,
 } from '../../../../module';
-import fs from 'fs';
 import path from 'path';
+import fs from 'fs';
 type ScriptPathValueType = {
   absolutePath: string;
   fileName: string;
@@ -15,51 +13,38 @@ type ScriptPathValueType = {
 };
 export class ScriptPathOption extends Optional<ScriptPathValueType> {
   mIsRequired = true;
-  mFetchCount = 1;
   mFlags = ['-s', '--script'];
-  fetchByCli(argv: Array<string>): Promise<void> {
-    return new Promise(async (resolve, reject) => {});
+  mFetchCount = 1;
+  get undefinedErrorMessage(): string {
+    return 'Script option is missing. You can set it by type "barista -s yourScript.js" or create default script file in your root dir. (i.e, .barista.js)';
   }
-  fetchByConfig(): Promise<void> {
-    return new Promise(async (resolve, reject) => {});
-  }
-  fetchByDefault(): Promise<void> {
-    return new Promise(async (resolve, reject) => {});
-  }
-
-  
-  mDefaultValue = async (): Promise<ScriptPathValueType | undefined> => {
-    const defaultScriptFiles = fs
-      .readdirSync(getRootDir())
-      .filter((eachFileName) =>
-        AllowedScriptExtension.checkIsDefaultFileName(eachFileName),
-      );
-    switch (defaultScriptFiles.length) {
-      case 0:
-        return undefined;
-      case 1:
-        const defaultScriptFile = defaultScriptFiles[0];
-        return {
-          absolutePath: path.join(getRootDir(), defaultScriptFile),
-          fileName: defaultScriptFile,
-          extension: defaultScriptFile
-            .split('.')
-            .pop() as AllowedScriptExtension,
-        };
-    }
-    const highLigher = await HighLighter.instance;
-    const selectionResult = await highLigher.select(
-      'Default configuration file is ambigious. Which one is correct?',
-      defaultScriptFiles,
+  async fetchByConfig(config: OptionConfig): Promise<void> {}
+  async fetchByDefault(): Promise<void> {}
+  async cast(fetchedStringArray: Array<string>): Promise<ScriptPathValueType> {
+    const fetchedString = fetchedStringArray[0];
+    const possiblePaths = Array.from(
+      new Set(
+        path.isAbsolute(fetchedString)
+          ? [fetchedString]
+          : [
+              path.normalize(path.join(getRootDir(), fetchedString)),
+              path.normalize(path.join(process.cwd(), fetchedString)),
+            ],
+      ),
     );
-    return selectionResult
-      ? {
-          absolutePath: path.join(getRootDir(), selectionResult),
-          fileName: selectionResult,
-          extension: selectionResult.split('.').pop() as AllowedScriptExtension,
-        }
-      : undefined;
-  };
-  
+    const existingScriptPaths = possiblePaths.filter((eachScriptPath) =>
+      fs.existsSync(eachScriptPath),
+    );
+    if (!existingScriptPaths.length)
+      throw new FileNotFoundError(`No such file exists. ${fetchedString}`);
+    const scriptPathsMatchedExtension = existingScriptPaths.filter(
+      (eachScriptPath) => AllowedScriptExtension.checkIsAllowed(eachScriptPath),
+    );
+    return {
+      absolutePath: 'tmp',
+      fileName: 'tmp',
+      extension: AllowedScriptExtension.js,
+    };
+  }
+  async afterEvaluate(value: ScriptPathValueType): Promise<void> {}
 }
-*/

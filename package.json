@@ -19,7 +19,7 @@
     "dev@link:default": "yarn link",
     "dev@update": "ncu -u && yarn",
     "// Test": "-----------------------------------------------------",
-    "test": "yarn dev@build && barista -c ./something.baristarcd"
+    "test": "yarn dev@build && barista"
   },
   "bin": {
     "barista": "./dist/index.js"
@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "cli-select": "^1.1.2"
+    "cli-select": "^1.1.2",
+    "ts-import": "^2.0.39",
+    "yaml": "^1.10.2"
   }
 }

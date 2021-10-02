@@ -2,6 +2,9 @@
 export * from './components/enum/AllowedConfigExtension';
 export * from './components/enum/AllowedScriptExtension';
 
+// Errors
+export * from './components/errors/Errors';
+
 // Functions
 export * from './components/functions/SetProcessEnv';
 export * from './components/functions/GetRootDir';
