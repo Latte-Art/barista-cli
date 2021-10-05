@@ -1,6 +1,7 @@
 import { MissingRequiredOptionError } from '../../../../../module';
 export type OptionConfig = {
   script: string;
+  tsc: string;
 };
 export abstract class Optional<ValueType> {
   protected static config: OptionConfig;

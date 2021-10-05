@@ -93,7 +93,7 @@ export class ConfigPathOption extends Optional<
       default:
         const highLighter = await HighLighter.instance;
         const selectionResult = await highLighter.select(
-          `There are ${configPathsMatchedExtension.length} files deteced as configuration.`,
+          `There are ${configPathsMatchedExtension.length} files detected as configuration.`,
           configPathsMatchedExtension,
         );
         if (selectionResult) {

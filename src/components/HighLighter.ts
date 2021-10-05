@@ -16,12 +16,12 @@ export class HighLighter {
     return chalk.rgb(205, 133, 63).bold('Barista');
   }
   info(...data: any[]) {
-    console.info(this.cliName, chalk.bold.blue('info'), '--', chalk.cyan(data));
+    console.info(this.cliName, chalk.bold.blue('Info'), '--', chalk.cyan(data));
   }
   error(...data: any) {
     console.error(
       this.cliName,
-      chalk.bold.red('error'),
+      chalk.bold.red('Error'),
       '--',
       chalk.redBright(data),
     );
