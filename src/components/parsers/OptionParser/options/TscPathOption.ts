@@ -59,9 +59,9 @@ export class TscPathOption extends Optional<TscPathValueType | undefined> {
           fileName: path.basename(tscPathsMatchedExtension[0]),
         };
       default:
-        const highLigher = await HighLighter.instance;
-        const selectionResult = await highLigher.select(
-          `There are ${tscPathsMatchedExtension.length} files detected as tscofnig.json`,
+        const highLighter = await HighLighter.instance;
+        const selectionResult = await highLighter.select(
+          `There are ${tscPathsMatchedExtension.length} files detected as tsconfig.json`,
           tscPathsMatchedExtension,
         );
         if (selectionResult) {
@@ -70,7 +70,7 @@ export class TscPathOption extends Optional<TscPathValueType | undefined> {
             fileName: path.basename(selectionResult),
           };
         } else {
-          highLigher.info(`You have canceled to select tsconfig file`);
+          highLighter.info(`You have canceled to select tsconfig file`);
           process.exit(0);
         }
     }

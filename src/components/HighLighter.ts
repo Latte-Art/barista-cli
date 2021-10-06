@@ -1,8 +1,35 @@
 import chalk from 'chalk';
 import cliSelect from 'cli-select';
 
+export class StringIndexPairInInputCommand {
+  private mIndex: number;
+  private mValue: string;
+  get index(): number {
+    return this.mIndex;
+  }
+  get value(): string {
+    return this.mValue;
+  }
+  get lastIndex(): number {
+    return this.mIndex + this.value.length - 1;
+  }
+  concat(
+    ...assets: Array<string | StringIndexPairInInputCommand>
+  ): StringIndexPairInInputCommand {
+    assets.forEach((asset) => {
+      this.mValue += typeof asset == 'string' ? asset : asset.value;
+    });
+    return this;
+  }
+  constructor(index: number, value: string) {
+    this.mIndex = index;
+    this.mValue = value;
+  }
+}
+
 export class HighLighter {
   private static sInstance: HighLighter;
+  inputCommand = `barista ${process.argv.slice(2).join(' ')}` as const;
   static get instance(): Promise<HighLighter> {
     return new Promise(async (resolve) => {
       if (!this.sInstance) {
@@ -11,7 +38,9 @@ export class HighLighter {
       resolve(this.sInstance);
     });
   }
-  private constructor() {}
+  private constructor() {
+    console.log(this.inputCommand);
+  }
   private get cliName() {
     return chalk.rgb(205, 133, 63).bold('Barista');
   }
@@ -26,6 +55,31 @@ export class HighLighter {
       chalk.redBright(data),
     );
   }
+
+  highlightByRange(
+    from: number,
+    to: number,
+    sentence: string = this.inputCommand,
+  ): string {
+    return (
+      sentence.substring(0, from) +
+      chalk.bgMagenta(sentence.substring(from, to + 1)) +
+      sentence.substring(to + 1)
+    );
+  }
+
+  highlightByPoints(
+    points: number[],
+    sentence: string = this.inputCommand,
+  ): string {
+    return sentence
+      .split('')
+      .map((eachValue, index) =>
+        points.includes(index) ? chalk.bgMagenta(eachValue) : eachValue,
+      )
+      .join('');
+  }
+
   async select<ValueType>(
     initialString: string,
     values: Array<ValueType>,

@@ -1,6 +1,8 @@
 // Enum
 export * from './components/enum/AllowedConfigExtension';
 export * from './components/enum/AllowedScriptExtension';
+export * from './components/enum/CommandCompletionFlag';
+export * from './components/enum/CommandKeyword';
 
 // Errors
 export * from './components/errors/Errors';
@@ -11,8 +13,9 @@ export * from './components/functions/GetRootDir';
 
 // Parsers
 export * from './components/parsers/OptionParser/OptionParser';
+export * from './components/parsers/CommandParser/CommandParser';
 
-// HighLigher
+// HighLighter
 export * from './components/HighLighter';
 
 // Tmp

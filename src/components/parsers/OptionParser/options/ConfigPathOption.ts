@@ -40,8 +40,8 @@ export class ConfigPathOption extends Optional<
         this.mIsFetched = true;
         break;
       default:
-        const highLigher = await HighLighter.instance;
-        const selectionResult = await highLigher.select(
+        const highLighter = await HighLighter.instance;
+        const selectionResult = await highLighter.select(
           `There are ${defaultConfigFiles.length} files detected as default configuration.`,
           defaultConfigFiles,
         );

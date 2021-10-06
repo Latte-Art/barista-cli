@@ -17,7 +17,7 @@ export namespace AllowedScriptExtension {
     );
   export const checkIsDefaultFileName = (fileName: string): boolean =>
     allowedScriptExtensionStringArray.some(
-      (eachExtensionString) => `barista${eachExtensionString}` == fileName,
+      (eachExtensionString) => `.barista${eachExtensionString}` == fileName,
     );
   export const getMatchedExtension = (
     fileName: string,

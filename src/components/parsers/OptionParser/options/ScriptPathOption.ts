@@ -45,8 +45,8 @@ export class ScriptPathOption extends Optional<ScriptPathValueType> {
         this.mIsFetched = true;
         break;
       default:
-        const highLigher = await HighLighter.instance;
-        const selectionResult = await highLigher.select(
+        const highLighter = await HighLighter.instance;
+        const selectionResult = await highLighter.select(
           `There are ${defaultScriptFiles.length} files detected as default script.`,
           defaultScriptFiles,
         );
@@ -142,7 +142,7 @@ export class ScriptPathOption extends Optional<ScriptPathValueType> {
             script = script.default;
           else if (rootKeys.length > 1 && rootKeys.includes('default'))
             throw new UnresolvedSyntaxError(
-              `Your barista script ${value.fileName} has both default and named module exports.`,
+              `Your input script ${value.fileName} has both default and named module exports.`,
             );
           break;
         case AllowedScriptExtension.yaml:

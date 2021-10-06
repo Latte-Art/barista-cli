@@ -1,10 +1,10 @@
 import { MissingRequiredOptionError } from '../../../../../module';
 export type OptionConfig = {
-  script: string;
-  tsc: string;
+  script?: string;
+  tsc?: string;
 };
 export abstract class Optional<ValueType> {
-  protected static config: OptionConfig;
+  protected static config: OptionConfig = {};
 
   protected abstract mIsRequired: boolean;
   protected abstract mFlags: Array<string>;
@@ -22,6 +22,9 @@ export abstract class Optional<ValueType> {
 
   value!: ValueType;
 
+  get flags(): Array<string> {
+    return this.mFlags;
+  }
   get undefinedErrorMessage(): string {
     return 'Unimplemented undefined error message';
   }

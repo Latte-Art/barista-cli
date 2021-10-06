@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-import chalk from 'chalk';
 import { HighLighter } from '../../module';
 export const setProcessEnv = async () => {
   const highLighter = await HighLighter.instance;
@@ -21,10 +20,10 @@ export const setProcessEnv = async () => {
             .split('\n')
             .filter((eachLine) => eachLine.includes('='))
             .map((eachLine) => {
-              const spliterIndex = eachLine.indexOf('=');
+              const splitterIndex = eachLine.indexOf('=');
               return [
-                eachLine.slice(0, spliterIndex),
-                eachLine.slice(spliterIndex + 1),
+                eachLine.slice(0, splitterIndex),
+                eachLine.slice(splitterIndex + 1),
               ];
             }),
         ),
