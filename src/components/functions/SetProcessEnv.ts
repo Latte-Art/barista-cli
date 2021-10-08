@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import { HighLighter } from '../../module';
+import chalk from 'chalk';
 export const setProcessEnv = async () => {
   const highLighter = await HighLighter.instance;
   if (!process.env.npm_config_argv && !process.env.npm_lifecycle_event) {
@@ -35,8 +36,16 @@ export const setProcessEnv = async () => {
       throw reason;
     })
     .on('uncaughtException', (error) => {
-      if (error) highLighter.error(error);
-      else process.exit(0);
-      process.exit(1);
+      if (error) {
+        const { version } = require(`${__dirname}/../../../package.json`);
+        console.error(
+          chalk.bold(`
+          Oh, Gee! Something went wrong!
+          You're currently using Barista ${version}.
+        `),
+        );
+        highLighter.error(error);
+      } else process.exit(0);
+      process.exit(2);
     });
 };

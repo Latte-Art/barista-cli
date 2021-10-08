@@ -4,6 +4,7 @@ import {
   getRootDir,
   FileNotFoundError,
   UnresolvedSyntaxError,
+  ScriptParser,
 } from '../../../../module';
 import path from 'path';
 import fs from 'fs';
@@ -11,6 +12,7 @@ import yaml from 'yaml';
 import { InvalidFileExtensionError } from '../../../errors/Errors';
 import { HighLighter } from '../../../HighLighter';
 import { tsImport, Compiler } from 'ts-import';
+import { KoconutArray } from 'koconut';
 type ScriptPathValueType = {
   absolutePath: string;
   fileName: string;
@@ -115,7 +117,7 @@ export class ScriptPathOption extends Optional<ScriptPathValueType> {
     }
   }
   async afterEvaluate(value: ScriptPathValueType): Promise<void> {
-    let script: any = {};
+    let scriptObject: any = {};
     try {
       switch (AllowedScriptExtension.getMatchedExtension(value.absolutePath)) {
         case AllowedScriptExtension.js:
@@ -130,16 +132,16 @@ export class ScriptPathOption extends Optional<ScriptPathValueType> {
                   flags: [`--project ${Optional.config.tsc}`],
                 } as any)
               : tsImport;
-            script = await compiler.compile(value.absolutePath);
-          } else script = require(value.absolutePath);
-          if (typeof script != 'object') {
+            scriptObject = await compiler.compile(value.absolutePath);
+          } else scriptObject = require(value.absolutePath);
+          if (typeof scriptObject != 'object') {
             throw new UnresolvedSyntaxError(
               `The format of ${value.fileName} is not an object.`,
             );
           }
-          const rootKeys = Object.keys(script);
+          const rootKeys = Object.keys(scriptObject);
           if (rootKeys.length == 1 && rootKeys[0] == 'default')
-            script = script.default;
+            scriptObject = scriptObject.default;
           else if (rootKeys.length > 1 && rootKeys.includes('default'))
             throw new UnresolvedSyntaxError(
               `Your input script ${value.fileName} has both default and named module exports.`,
@@ -147,9 +149,13 @@ export class ScriptPathOption extends Optional<ScriptPathValueType> {
           break;
         case AllowedScriptExtension.yaml:
         case AllowedScriptExtension.yml:
-          script = yaml.parse(fs.readFileSync(value.absolutePath, 'utf-8'));
+          scriptObject = yaml.parse(
+            fs.readFileSync(value.absolutePath, 'utf-8'),
+          );
           break;
       }
+      const scriptParser = await ScriptParser.instance;
+      scriptParser['setScriptObject'](scriptObject);
     } catch (error) {
       throw new UnresolvedSyntaxError(
         `Cannot parse ${value.fileName}, ${(error as any).message}`,

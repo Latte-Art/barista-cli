@@ -1,10 +1,14 @@
 import {
   OptionParser,
   HighLighter,
-  StringIndexPairInInputCommand,
+  StringIndexPair,
   UnresolvedSyntaxError,
   CommandKeyword,
 } from '../../../module';
+import { Command } from './command/abstract/Command';
+import { SingleCommnad } from './command/SingleCommand';
+import { SequencialCommands } from './command/SequencialCommands';
+import { ParallelCommands } from './command/ParallelCommands';
 
 export class CommandParser {
   private static sInstance: CommandParser;
@@ -25,7 +29,7 @@ export class CommandParser {
     this.mHighLighter = await HighLighter.instance;
   }
 
-  private getMappedArgsAsPair(): Array<StringIndexPairInInputCommand> {
+  private getMappedArgsAsPair(): Array<StringIndexPair> {
     const argString = this.mOptionParser.restArgs.join(' ').trim();
     if (!argString.length) return new Array();
     const ignoreCount = this.mHighLighter.inputCommand.indexOf(argString);
@@ -33,14 +37,12 @@ export class CommandParser {
       .split('')
       .map(
         (eachValue, index) =>
-          new StringIndexPairInInputCommand(ignoreCount + index, eachValue),
+          new StringIndexPair(ignoreCount + index, eachValue),
       );
   }
 
-  private checkBracketSyntax(
-    mappedArgsAsPair: Array<StringIndexPairInInputCommand>,
-  ) {
-    const incorrectOpenBrackets = mappedArgsAsPair
+  private checkBracketSyntax(mappedArgsAsPair: Array<StringIndexPair>) {
+    const incorrectOpeningBrackets = mappedArgsAsPair
       .filter((eachPair) =>
         Object.values(CommandKeyword)
           .filter((eachKeyword) => eachKeyword != CommandKeyword.SEPERATOR)
@@ -62,26 +64,88 @@ export class CommandParser {
             (eachPair.value === CommandKeyword.CLOSE_SEQUENCE &&
               top.value !== CommandKeyword.OPEN_SEQUENCE)
           ) {
-            console.log(eachPair);
-            console.log(
-              this.mHighLighter.highlightByRange(
-                eachPair.index,
-                eachPair.lastIndex,
-              ),
+            throw new UnresolvedSyntaxError(
+              `Incorrect closing bracket.\n${this.mHighLighter.highlightByPoints(
+                [eachPair.index],
+              )}`,
             );
-            process.exit(0);
-            /*
-            throw new UnresolvedSyntaxError(`Incorrect closing bracket.
-            \n ${this.mHighLighter.}`);
-            */
           }
         }
         return stack;
-      }, new Array<StringIndexPairInInputCommand>());
+      }, new Array<StringIndexPair>());
+    if (incorrectOpeningBrackets.length)
+      throw new Error(
+        `Incorrect opening brackets. \n${this.mHighLighter.highlightByPoints(
+          incorrectOpeningBrackets.map(
+            (eachIncorrectOpeningBracket) => eachIncorrectOpeningBracket.index,
+          ),
+        )}`,
+      );
   }
 
   async parseCommands() {
     const mappedArgsAsPair = this.getMappedArgsAsPair();
     this.checkBracketSyntax(mappedArgsAsPair);
+    const commandKeywordStrings = Object.values(CommandKeyword).map(
+      (eachKeyword) => eachKeyword.toString(),
+    );
+    const tmp = new SequencialCommands(
+      mappedArgsAsPair
+        .reduce((stack, eachPair) => {
+          if (commandKeywordStrings.includes(eachPair.value))
+            stack.push(eachPair);
+          else {
+            const topPair = stack[stack.length - 1];
+            if (!topPair || commandKeywordStrings.includes(topPair.value))
+              stack.push(eachPair);
+            else topPair.concat(eachPair);
+          }
+          return stack;
+        }, new Array<StringIndexPair>())
+        .map((eachPair) => eachPair.trim())
+        .filter(
+          (eachPair) =>
+            eachPair.value != '' && eachPair.value != CommandKeyword.SEPERATOR,
+        )
+        .reduce((stack, eachPair) => {
+          if (commandKeywordStrings.includes(eachPair.value)) {
+            switch (eachPair.value) {
+              case CommandKeyword.OPEN_SEQUENCE:
+              case CommandKeyword.OPEN_PARALLEL:
+                stack.push(eachPair.value);
+                break;
+              case CommandKeyword.CLOSE_SEQUENCE:
+                const sequencial = new SequencialCommands();
+                while (true) {
+                  const top = stack.pop();
+                  if (
+                    typeof top == 'string' &&
+                    top == CommandKeyword.OPEN_SEQUENCE
+                  )
+                    break;
+                  sequencial.commands.unshift(top as Command);
+                }
+                stack.push(sequencial);
+                break;
+              case CommandKeyword.CLOSE_PARALLEL:
+                const parallel = new ParallelCommands();
+                while (true) {
+                  const top = stack.pop();
+                  if (
+                    typeof top == 'string' &&
+                    top == CommandKeyword.OPEN_PARALLEL
+                  )
+                    break;
+                  parallel.commands.unshift(top as Command);
+                }
+                stack.push(parallel);
+                break;
+            }
+          } else stack.push(new SingleCommnad(eachPair));
+          return stack;
+        }, new Array<CommandKeyword | Command>()) as Array<Command>,
+    );
+    // console.log(JSON.stringify(tmp, null, 4));
+    await tmp.validate();
   }
 }

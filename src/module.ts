@@ -14,6 +14,7 @@ export * from './components/functions/GetRootDir';
 // Parsers
 export * from './components/parsers/OptionParser/OptionParser';
 export * from './components/parsers/CommandParser/CommandParser';
+export * from './components/parsers/ScriptParser/ScriptParser';
 
 // HighLighter
 export * from './components/HighLighter';

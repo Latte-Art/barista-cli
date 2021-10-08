@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import cliSelect from 'cli-select';
 
-export class StringIndexPairInInputCommand {
+export class StringIndexPair {
   private mIndex: number;
   private mValue: string;
   get index(): number {
@@ -13,12 +13,15 @@ export class StringIndexPairInInputCommand {
   get lastIndex(): number {
     return this.mIndex + this.value.length - 1;
   }
-  concat(
-    ...assets: Array<string | StringIndexPairInInputCommand>
-  ): StringIndexPairInInputCommand {
+  concat(...assets: Array<string | StringIndexPair>): StringIndexPair {
     assets.forEach((asset) => {
       this.mValue += typeof asset == 'string' ? asset : asset.value;
     });
+    return this;
+  }
+  trim(): StringIndexPair {
+    this.mIndex += this.mValue.length - this.mValue.trimLeft().length;
+    this.mValue = this.mValue.trim();
     return this;
   }
   constructor(index: number, value: string) {

@@ -19,7 +19,8 @@
     "dev@link:default": "yarn link",
     "dev@update": "ncu -u && yarn",
     "// Test": "-----------------------------------------------------",
-    "test": "yarn dev@build && barista -s .barista.js [a.b],] c"
+    "test": "yarn dev@build && barista a",
+    "test@tmp": "yarn dev@build && barista ...a.b~ -a bbc, [c! -n 30], {...dd.qwe, zzz }"
   },
   "bin": {
     "barista": "./dist/index.js"
@@ -33,6 +34,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-spellcheck": "^0.0.19",
+    "koconut": "1.0.15",
     "npm-check-updates": "11.8.5",
     "prettier": "2.4.1",
     "run-script-os": "1.1.6",
@@ -46,6 +48,7 @@
     "cli-select": "^1.1.2",
     "string-similarity": "^4.0.4",
     "ts-import": "^2.0.39",
+    "wildcard-match": "5.1.2",
     "yaml": "^1.10.2"
   }
 }
