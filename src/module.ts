@@ -9,6 +9,7 @@ export * from './components/errors/Errors';
 
 // Functions
 export * from './components/functions/SetProcessEnv';
+export * from './components/functions/GetTerminalWidth';
 export * from './components/functions/GetRootDir';
 
 // Parsers

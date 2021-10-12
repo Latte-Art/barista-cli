@@ -1,14 +1,10 @@
 const { KoconutArray } = require('koconut');
-module.exports = {
-  a: 'echo a',
 
-  b: {
-    ba: '',
-    obb: {
-      boa: '',
-      bob: '',
-    },
+module.exports = {
+  a: (args) => {
+    console.log(args);
+    return 'echo a';
   },
-  c: ['', '', ['', '', 'asdasd']],
+  b: 'echo c',
   // d: KoconutArray.from([1, 2, 3, 4, 5]),
 };

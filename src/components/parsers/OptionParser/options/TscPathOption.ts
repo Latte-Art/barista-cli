@@ -13,7 +13,7 @@ type TscPathValueType = {
 };
 export class TscPathOption extends Optional<TscPathValueType | undefined> {
   mIsRequired = false;
-  mFlags = ['-t', '--tsc'];
+  mFlags = ['--barista-tsc'];
   mFetchCount = 1;
   async fetchByConfig(config: OptionConfig): Promise<void> {
     if (config.tsc) {

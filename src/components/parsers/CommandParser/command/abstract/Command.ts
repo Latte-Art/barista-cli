@@ -1,3 +1,7 @@
 export abstract class Command {
-  abstract validate(): Promise<void>;
+  abstract confirmCmd(): Promise<Command>;
+  abstract execute(): Promise<{
+    exitCode: number;
+    error?: Error;
+  }>;
 }

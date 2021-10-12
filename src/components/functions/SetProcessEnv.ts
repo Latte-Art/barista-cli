@@ -45,7 +45,7 @@ export const setProcessEnv = async () => {
         `),
         );
         highLighter.error(error);
+        process.exit(2);
       } else process.exit(0);
-      process.exit(2);
     });
 };

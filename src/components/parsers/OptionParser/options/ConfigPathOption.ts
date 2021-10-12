@@ -21,7 +21,7 @@ export class ConfigPathOption extends Optional<
   ConfigPathValueType | undefined
 > {
   mIsRequired = false;
-  mFlags = ['-c', '--config'];
+  mFlags = ['--barista-config'];
   mFetchCount = 1;
   async fetchByConfig(config: OptionConfig): Promise<void> {}
   async fetchByDefault(): Promise<void> {

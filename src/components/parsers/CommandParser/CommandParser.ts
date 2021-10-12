@@ -6,14 +6,15 @@ import {
   CommandKeyword,
 } from '../../../module';
 import { Command } from './command/abstract/Command';
-import { SingleCommnad } from './command/SingleCommand';
-import { SequencialCommands } from './command/SequencialCommands';
+import { SingleCommand } from './command/SingleCommand';
+import { SequentialCommands } from './command/SequencialCommands';
 import { ParallelCommands } from './command/ParallelCommands';
 
 export class CommandParser {
   private static sInstance: CommandParser;
   private mOptionParser!: OptionParser;
   private mHighLighter!: HighLighter;
+  private mCommands!: SequentialCommands;
   static get instance(): Promise<CommandParser> {
     return new Promise(async (resolve) => {
       if (!this.sInstance) {
@@ -89,7 +90,7 @@ export class CommandParser {
     const commandKeywordStrings = Object.values(CommandKeyword).map(
       (eachKeyword) => eachKeyword.toString(),
     );
-    const tmp = new SequencialCommands(
+    this.mCommands = new SequentialCommands(
       mappedArgsAsPair
         .reduce((stack, eachPair) => {
           if (commandKeywordStrings.includes(eachPair.value))
@@ -115,7 +116,7 @@ export class CommandParser {
                 stack.push(eachPair.value);
                 break;
               case CommandKeyword.CLOSE_SEQUENCE:
-                const sequencial = new SequencialCommands();
+                const sequential = new SequentialCommands();
                 while (true) {
                   const top = stack.pop();
                   if (
@@ -123,9 +124,9 @@ export class CommandParser {
                     top == CommandKeyword.OPEN_SEQUENCE
                   )
                     break;
-                  sequencial.commands.unshift(top as Command);
+                  sequential.commands.unshift(top as Command);
                 }
-                stack.push(sequencial);
+                stack.push(sequential);
                 break;
               case CommandKeyword.CLOSE_PARALLEL:
                 const parallel = new ParallelCommands();
@@ -141,11 +142,21 @@ export class CommandParser {
                 stack.push(parallel);
                 break;
             }
-          } else stack.push(new SingleCommnad(eachPair));
+          } else stack.push(new SingleCommand(eachPair));
           return stack;
         }, new Array<CommandKeyword | Command>()) as Array<Command>,
     );
-    // console.log(JSON.stringify(tmp, null, 4));
-    await tmp.validate();
+    if (!this.mCommands.commands.length) {
+      this.mCommands.commands.push(
+        new SingleCommand(
+          new StringIndexPair(this.mHighLighter.inputCommand.length, '.'),
+        ),
+      );
+    }
+    await this.mCommands.confirmCmd();
+  }
+
+  async executeCommands() {
+    await this.mCommands.execute();
   }
 }

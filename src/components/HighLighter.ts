@@ -41,9 +41,7 @@ export class HighLighter {
       resolve(this.sInstance);
     });
   }
-  private constructor() {
-    console.log(this.inputCommand);
-  }
+  private constructor() {}
   private get cliName() {
     return chalk.rgb(205, 133, 63).bold('Barista');
   }
@@ -66,8 +64,8 @@ export class HighLighter {
   ): string {
     return (
       sentence.substring(0, from) +
-      chalk.bgMagenta(sentence.substring(from, to + 1)) +
-      sentence.substring(to + 1)
+      chalk.bgMagenta(sentence.substring(from, to)) +
+      sentence.substring(to)
     );
   }
 
@@ -86,17 +84,20 @@ export class HighLighter {
   async select<ValueType>(
     initialString: string,
     values: Array<ValueType>,
+    stringifier: (value: ValueType) => string = (value: ValueType) => {
+      return `${value}`;
+    },
   ): Promise<ValueType | undefined> {
     this.info(initialString);
     const selectedIndex = (
       await cliSelect({
         values: [
-          ...values.map((eachValue) => chalk.green(eachValue)),
+          ...values.map((eachValue) => chalk.green(stringifier(eachValue))),
           chalk.magenta('Cancel'),
         ],
         selected: `(${chalk.greenBright('✔')})`,
         valueRenderer: (value, selected) =>
-          selected ? chalk.underline(value) : value,
+          selected ? chalk.bold(value) : value,
       })
     ).id as number;
     console.clear();

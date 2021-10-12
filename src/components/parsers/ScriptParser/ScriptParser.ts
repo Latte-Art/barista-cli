@@ -16,13 +16,16 @@ export class ScriptParser {
   private async init() {}
   private setScriptObject(scriptObject: any) {
     this.mScriptObject = scriptObject;
-    this.mFlattenedScriptObject = this.flatten(this.mScriptObject);
+    this.mFlattenedScriptObject = this.flatten(
+      this.mScriptObject,
+      Array.isArray(this.mScriptObject) ? '#' : '',
+    );
   }
   get scriptObject() {
     return this.mScriptObject;
   }
 
-  private flatten(targetObject: any, prefix: string = '') {
+  private flatten(targetObject: any, prefix: string) {
     return Object.keys(targetObject).reduce((resultObject: any, key) => {
       const value = targetObject[key];
       const valueType = typeof value;
@@ -49,8 +52,8 @@ export class ScriptParser {
             `script value '${value}' of ${prefix}${key} is not allowed. ${
               value == null || valueType == 'undefined'
                 ? ''
-                : `You cannot use '${valueType}'' in barista script.`
-            }`,
+                : `You cannot use '${valueType}' in barista script.`
+            }\nIt can only be either a simple command string or function, which returns it.`,
           );
       }
       return resultObject;

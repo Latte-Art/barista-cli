@@ -20,7 +20,7 @@ type ScriptPathValueType = {
 };
 export class ScriptPathOption extends Optional<ScriptPathValueType> {
   mIsRequired = true;
-  mFlags = ['-s', '--script'];
+  mFlags = ['--barista-script'];
   mFetchCount = 1;
   get undefinedErrorMessage(): string {
     return 'Script option is missing. You can set it by type "barista -s yourScript.js" or create default script file in your root dir. (i.e, .barista.js)';
